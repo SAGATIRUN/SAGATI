@@ -1,0 +1,85 @@
+# ci-cd/github-actions/lint-and-test.yml
+# GitHub Actions workflow for SAGATI linting and testing
+# Author: YourName
+# Date: 2025-10-08
+
+name: Lint and Test
+
+on:
+  pull_request:
+    branches:
+      - main
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  lint-and-test-frontend:
+    name: Lint and Test Frontend
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '20'
+
+      - name: Install dependencies
+        working-directory: ./frontend
+        run: |
+          yarn install --frozen-lockfile
+
+      - name: Run Lint
+        working-directory: ./frontend
+        run: |
+          yarn lint
+
+      - name: Run Tests
+        working-directory: ./frontend
+        run: |
+          yarn test --watchAll=false --coverage
+
+  lint-and-test-backend:
+    name: Lint and Test Backend
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '20'
+
+      - name: Install dependencies
+        working-directory: ./backend
+        run: |
+          yarn install --frozen-lockfile
+
+      - name: Run Lint
+        working-directory: ./backend
+        run: |
+          yarn lint
+
+      - name: Run Tests
+        working-directory: ./backend
+        run: |
+          yarn test --coverage
+
+  # Optional: aggregate results and send notifications
+  notify:
+    name: Notify Slack
+    runs-on: ubuntu-latest
+    needs: [lint-and-test-frontend, lint-and-test-backend]
+    if: ${{ secrets.SLACK_WEBHOOK }}
+    steps:
+      - name: Slack Notification
+        uses: rtCamp/action-slack-notify@v2
+        with:
+          webhook_url: ${{ secrets.SLACK_WEBHOOK }}
+          message: "SAGATI lint and tests completed successfully! ✅"
