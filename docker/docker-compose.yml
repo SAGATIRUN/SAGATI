@@ -1,0 +1,126 @@
+# docker-compose.yml
+# SAGATI full stack docker-compose
+# Author: YourName
+# Date: 2025-10-08
+
+version: "3.9"
+
+services:
+
+  # -------------------------------
+  # Backend service
+  # -------------------------------
+  backend:
+    build:
+      context: ./docker
+      dockerfile: backend.Dockerfile
+      args:
+        NODE_ENV: production
+    container_name: sagati-backend
+    ports:
+      - "4000:4000"
+    environment:
+      NODE_ENV: production
+      PORT: 4000
+      DATABASE_URL: postgres://sagati:sagati@db:5432/sagati
+      SOLANA_RPC_URL: https://api.mainnet-beta.solana.com
+    volumes:
+      - ./logs/backend:/app/logs
+    restart: always
+    depends_on:
+      - db
+
+  # -------------------------------
+  # Frontend service
+  # -------------------------------
+  frontend:
+    build:
+      context: ./docker
+      dockerfile: frontend.Dockerfile
+      args:
+        REACT_APP_API_URL: http://backend:4000
+        REACT_APP_CHAIN_NETWORK: mainnet
+    container_name: sagati-frontend
+    ports:
+      - "3000:80"
+    restart: always
+    depends_on:
+      - backend
+
+  # -------------------------------
+  # Solana Program / On-chain service (optional)
+  # -------------------------------
+  solana-program:
+    build:
+      context: ./docker
+      dockerfile: deploy_solana_program.Dockerfile
+    container_name: sagati-solana
+    environment:
+      SOLANA_KEYPAIR: /keys/id.json
+      SOLANA_CLUSTER: mainnet
+    volumes:
+      - ./keys:/keys:ro
+    restart: always
+
+  # -------------------------------
+  # PostgreSQL database
+  # -------------------------------
+  db:
+    image: postgres:16-alpine
+    container_name: sagati-db
+    environment:
+      POSTGRES_USER: sagati
+      POSTGRES_PASSWORD: sagati
+      POSTGRES_DB: sagati
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./data/db:/var/lib/postgresql/data
+    restart: always
+
+  # -------------------------------
+  # Prometheus monitoring
+  # -------------------------------
+  prometheus:
+    image: prom/prometheus:v2.53.1
+    container_name: sagati-prometheus
+    volumes:
+      - ./docker/prometheus.yml:/etc/prometheus/prometheus.yml
+    ports:
+      - "9090:9090"
+    restart: always
+    depends_on:
+      - backend
+      - frontend
+      - solana-program
+
+  # -------------------------------
+  # Node Exporter for host metrics
+  # -------------------------------
+  node-exporter:
+    image: quay.io/prometheus/node-exporter:1.7.0
+    container_name: sagati-node-exporter
+    ports:
+      - "9100:9100"
+    restart: always
+    pid: "host"
+    network_mode: "host"
+
+# -------------------------------
+# Networks (optional custom network)
+# -------------------------------
+networks:
+  default:
+    name: sagati-network
+    driver: bridge
+
+# -------------------------------
+# Volumes for persistence
+# -------------------------------
+volumes:
+  db-data:
+    driver: local
+  backend-logs:
+    driver: local
+  frontend-logs:
+    driver: local
