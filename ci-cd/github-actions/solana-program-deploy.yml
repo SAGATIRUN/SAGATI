@@ -1,0 +1,84 @@
+# ci-cd/github-actions/solana-program-deploy.yml
+# GitHub Actions workflow for SAGATI Solana program deployment
+# Author: YourName
+# Date: 2025-10-08
+
+name: Solana Program Deploy
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  build-and-deploy:
+    name: Build and Deploy Solana Program
+    runs-on: ubuntu-latest
+    env:
+      SOLANA_CLUSTER: ${{ secrets.SOLANA_CLUSTER }}      # mainnet, devnet, testnet
+      SOLANA_KEYPAIR: ${{ secrets.SOLANA_KEYPAIR }}      # Base64 encoded or path
+      PROGRAM_NAME: sagati_program
+      PROGRAM_PATH: ./solana-program
+
+    steps:
+      # -------------------------------
+      # Checkout code
+      # -------------------------------
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
+      # -------------------------------
+      # Install Rust and Solana CLI
+      # -------------------------------
+      - name: Install Rust
+        uses: actions-rs/toolchain@v1
+        with:
+          toolchain: stable
+          profile: minimal
+          override: true
+
+      - name: Install Solana CLI
+        run: |
+          sh -c "$(curl -sSfL https://release.solana.com/stable/install)"
+          export PATH="$HOME/.local/share/solana/install/active_release/bin:$PATH"
+          solana --version
+
+      # -------------------------------
+      # Configure Solana CLI
+      # -------------------------------
+      - name: Configure Solana CLI
+        run: |
+          echo "${{ secrets.SOLANA_KEYPAIR }}" > ~/sagati-keypair.json
+          solana config set --keypair ~/sagati-keypair.json
+          solana config set --url $SOLANA_CLUSTER
+          solana config get
+
+      # -------------------------------
+      # Build Solana Program
+      # -------------------------------
+      - name: Build Solana Program
+        working-directory: ${{ env.PROGRAM_PATH }}
+        run: |
+          cargo build-bpf --manifest-path Cargo.toml --bpf-out-dir target/deploy
+
+      # -------------------------------
+      # Deploy Solana Program
+      # -------------------------------
+      - name: Deploy Solana Program
+        working-directory: ${{ env.PROGRAM_PATH }}
+        run: |
+          solana program deploy target/deploy/${{ env.PROGRAM_NAME }}.so
+          PROGRAM_ID=$(solana program show ${PROGRAM_NAME} | grep "Program Id:" | awk '{print $3}')
+          echo "Program deployed successfully: $PROGRAM_ID"
+
+      # -------------------------------
+      # Notify Slack (optional)
+      # -------------------------------
+      - name: Notify Slack
+        if: ${{ secrets.SLACK_WEBHOOK }}
+        uses: rtCamp/action-slack-notify@v2
+        with:
+          webhook_url: ${{ secrets.SLACK_WEBHOOK }}
+          message: "SAGATI Solana program deployed successfully! Program ID: ${{ env.PROGRAM_NAME }} :rocket:"
+
