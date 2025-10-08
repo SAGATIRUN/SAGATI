@@ -1,7 +1,9 @@
-# I can get all of this done in just 12 hours.
+```
+I can get all of this done in just 12 hours.
+Meanwhile, the BSC network is churning out a pile of garbage every single day.
+And the craziest part? Some people are still swearing up and down that BSC memes are the future.
+Honestly, it blows my mind.
+```
 
-# Meanwhile, the BSC network is churning out a pile of garbage every single day.
-
-# And the craziest part? Some people are still swearing up and down that BSC memes are the future.
-
-# Honestly, it blows my mind.
+[![Website](https://img.shields.io/badge/Website-SAGATI-blue?logo=google-chrome)](https://sagati.run/)
+[![Twitter](https://img.shields.io/badge/Twitter-SAGATI-blue?logo=twitter)](https://x.com/SAGATIRUN)
