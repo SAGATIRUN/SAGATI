@@ -1,0 +1,169 @@
+SAGATI/
+├─ README.md                        # Project overview, architecture, quick start guide
+├─ CHANGELOG.md                      # Version changelog
+├─ CONTRIBUTING.md                   # Contribution guide
+├─ LICENSE
+├─ package.json                      # Frontend dependencies and scripts
+├─ tsconfig.json
+├─ .gitignore
+├─ .env.example                      # Example environment variables
+├─ docs/
+│   ├─ ARCHITECTURE.md               # System architecture
+│   ├─ API.md                        # API documentation
+│   ├─ MINDVECTOR.md                  # Mind Vector design document
+│   ├─ SOLANA_PROGRAM.md             # On-chain program documentation
+│   ├─ COMMUNITY.md                   # Community governance & multisig guide
+│   └─ DEPLOYMENT.md                  # Deployment guide
+│
+├─ scripts/
+│   ├─ deploy_frontend.sh
+│   ├─ deploy_backend.sh
+│   ├─ deploy_solana_program.sh
+│   ├─ migrate_db.ts
+│   ├─ seed_db.ts
+│   └─ monitor_setup.sh                # Monitoring setup script
+│
+├─ docker/
+│   ├─ frontend.Dockerfile
+│   ├─ backend.Dockerfile
+│   └─ docker-compose.yml
+│
+├─ ci-cd/
+│   └─ github-actions/
+│       ├─ build-and-deploy-frontend.yml
+│       ├─ build-and-deploy-backend.yml
+│       ├─ solana-program-deploy.yml
+│       └─ lint-and-test.yml
+│
+├─ frontend/
+│   ├─ public/
+│   │   ├─ images/
+│   │   ├─ animations/
+│   │   └─ emoji/
+│   │
+│   ├─ components/
+│   │   ├─ MindVectorPanel/
+│   │   │   ├─ MindVectorGraph.tsx
+│   │   │   ├─ MindVectorEmoji.tsx
+│   │   │   ├─ MindVectorStats.tsx
+│   │   │   └─ MindVectorTooltip.tsx
+│   │   ├─ WalletConnector/
+│   │   │   ├─ PhantomConnector.tsx
+│   │   │   ├─ SolflareConnector.tsx
+│   │   │   └─ WalletButton.tsx
+│   │   ├─ Animations/
+│   │   │   ├─ AnxiousCharacter.tsx
+│   │   │   ├─ BalancedFlowCharacter.tsx
+│   │   │   ├─ MindOverheatCharacter.tsx
+│   │   │   └─ IdleCharacter.tsx
+│   │   ├─ Dashboard/
+│   │   │   ├─ DashboardHeader.tsx
+│   │   │   ├─ DashboardFooter.tsx
+│   │   │   ├─ DashboardContent.tsx
+│   │   │   └─ DashboardSidebar.tsx
+│   │   ├─ Forms/
+│   │   │   ├─ CoreContributorForm.tsx
+│   │   │   ├─ ReferralForm.tsx
+│   │   │   ├─ MultiSigProposalForm.tsx
+│   │   │   └─ FeedbackForm.tsx
+│   │   ├─ Charts/
+│   │   │   ├─ TradingBehaviorChart.tsx
+│   │   │   ├─ PositionConcentrationChart.tsx
+│   │   │   └─ MindVectorTimelineChart.tsx
+│   │   └─ Common/
+│   │       ├─ Button.tsx
+│   │       ├─ Modal.tsx
+│   │       ├─ Tooltip.tsx
+│   │       └─ Loader.tsx
+│   │
+│   ├─ pages/
+│   │   ├─ index.tsx
+│   │   ├─ dashboard.tsx
+│   │   ├─ community.tsx
+│   │   ├─ open-source.tsx
+│   │   ├─ mindvector.tsx
+│   │   ├─ api-demo.tsx
+│   │   └─ _app.tsx
+│   │
+│   ├─ hooks/
+│   │   ├─ useWallet.ts
+│   │   ├─ useMindVector.ts
+│   │   ├─ useLiveUpdates.ts
+│   │   ├─ useMultiSig.ts
+│   │   └─ useAnimations.ts
+│   │
+│   ├─ utils/
+│   │   ├─ solanaUtils.ts
+│   │   ├─ mindVectorUtils.ts
+│   │   ├─ animationUtils.ts
+│   │   ├─ chartUtils.ts
+│   │   └─ formValidation.ts
+│   │
+│   └─ styles/
+│       ├─ globals.css
+│       ├─ tailwind.config.js
+│       ├─ theme.ts
+│       └─ animations.css
+│
+├─ backend/
+│   ├─ src/
+│   │   ├─ main.ts
+│   │   ├─ controllers/
+│   │   │   ├─ user.controller.ts
+│   │   │   ├─ mindVector.controller.ts
+│   │   │   ├─ community.controller.ts
+│   │   │   └─ multiSig.controller.ts
+│   │   ├─ services/
+│   │   │   ├─ mindVector.service.ts
+│   │   │   ├─ onChainData.service.ts
+│   │   │   ├─ multiSig.service.ts
+│   │   │   ├─ notification.service.ts
+│   │   │   └─ analytics.service.ts
+│   │   ├─ modules/
+│   │   │   ├─ auth.module.ts
+│   │   │   ├─ wallet.module.ts
+│   │   │   ├─ logging.module.ts
+│   │   │   └─ cache.module.ts
+│   │   ├─ websockets/
+│   │   │   ├─ mindVectorGateway.ts
+│   │   │   └─ notificationsGateway.ts
+│   │   ├─ database/
+│   │   │   ├─ user.entity.ts
+│   │   │   ├─ onChainAction.entity.ts
+│   │   │   ├─ mindVector.entity.ts
+│   │   │   └─ communityMultiSig.entity.ts
+│   │   └─ utils/
+│   │       ├─ logger.ts
+│   │       ├─ cache.ts
+│   │       ├─ solanaRpc.ts
+│   │       ├─ dataParser.ts
+│   │       └─ validation.ts
+│   │
+│   └─ config/
+│       ├─ app.config.ts
+│       ├─ db.config.ts
+│       ├─ websocket.config.ts
+│       └─ rpc.config.ts
+│
+├─ programs/
+│   ├─ sagati-mindvector/
+│   │   ├─ src/
+│   │   │   ├─ lib.rs
+│   │   │   ├─ processor.rs
+│   │   │   ├─ state.rs
+│   │   │   ├─ error.rs
+│   │   │   ├─ events.rs
+│   │   │   └─ utils.rs
+│   │   ├─ tests/
+│   │   │   ├─ mindvector.test.rs
+│   │   │   └─ processor.test.rs
+│   │   └─ Cargo.toml
+│   └─ Anchor.toml
+│
+└─ monitor/
+    ├─ prometheus/
+    │   └─ prometheus.yml
+    ├─ grafana/
+    │   └─ dashboards.json
+    └─ alerts/
+        └─ alert_rules.yml
